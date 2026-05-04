@@ -1,0 +1,185 @@
+@{
+    ViewData["Title"] = "Dashboard";
+    var patient = ViewBag.Patient as DentalClinic.Models.Patient;
+    var appointments = ViewBag.UpcomingAppointments as List<DentalClinic.Models.Appointment> ?? new();
+    int unpaidBills = ViewBag.UnpaidBills ?? 0;
+    var name = patient?.FullName ?? User.Identity?.Name ?? "there";
+    var firstName = name.Split(' ')[0];
+}
+
+<div class="pt-8 flex min-h-screen max-w-7xl mx-auto px-4">
+    <!-- Sidebar -->
+    <aside class="w-64 border-r border-slate-200 bg-white hidden md:block pt-8 px-4 shrink-0">
+        <div class="space-y-2">
+            <a asp-controller="Home" asp-action="Index" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-primary/10 text-primary font-semibold">
+                <span class="material-symbols-outlined fill-icon">dashboard</span>
+                <span>Overview</span>
+            </a>
+            <a asp-controller="Appointments" asp-action="Index" class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-slate-50 transition-colors">
+                <span class="material-symbols-outlined">calendar_today</span>
+                <span>Appointments</span>
+            </a>
+            <a asp-controller="Appointments" asp-action="Book" class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-slate-50 transition-colors">
+                <span class="material-symbols-outlined">add_circle</span>
+                <span>Book Appointment</span>
+            </a>
+            <a asp-controller="Billing" asp-action="Index" class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-slate-50 transition-colors">
+                <span class="material-symbols-outlined">payments</span>
+                <span>Billing</span>
+            </a>
+            @if (User.IsInRole("Admin") || User.IsInRole("Dentist"))
+            {
+                <a asp-controller="Patients" asp-action="Index" class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-slate-50 transition-colors">
+                    <span class="material-symbols-outlined">folder_shared</span>
+                    <span>Patient Records</span>
+                </a>
+            }
+            @if (User.IsInRole("Admin"))
+            {
+                <a asp-controller="Admin" asp-action="AuditLog" class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-slate-50 transition-colors">
+                    <span class="material-symbols-outlined">policy</span>
+                    <span>Audit Log</span>
+                </a>
+            }
+            <div class="pt-8 mt-8 border-t border-slate-100">
+                <a asp-controller="Account" asp-action="Logout" class="flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-50 transition-colors">
+                    <span class="material-symbols-outlined">logout</span>
+                    <span>Sign Out</span>
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-8 overflow-y-auto">
+        <header class="mb-10">
+            <h1 class="font-h2 text-h2 text-on-surface">Welcome back, @firstName 👋</h1>
+            <p class="text-on-surface-variant font-body-md">Your oral health is our priority. Here's what's happening with your care.</p>
+        </header>
+
+        <!-- Top Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
+            <!-- Next Appointment Banner -->
+            <div class="lg:col-span-2 bg-primary rounded-3xl p-8 text-white relative overflow-hidden shadow-lg">
+                <div class="relative z-10">
+                    <span class="bg-white/20 text-white text-label-sm font-label-sm px-3 py-1 rounded-full mb-6 inline-block">
+                        @(appointments.Any() ? "Next Appointment" : "No Upcoming Appointments")
+                    </span>
+                    @if (appointments.Any())
+                    {
+                        var next = appointments.First();
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <h2 class="font-h2 text-h2 mb-2">@next.AppointmentDate.ToString("dddd, MMM dd")</h2>
+                                <p class="text-primary-fixed font-body-lg flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-[20px]">schedule</span>
+                                    @next.AppointmentDate.ToString("hh:mm tt") — @next.Purpose
+                                </p>
+                                <p class="text-white/70 text-sm mt-1">Dr. @next.Dentist?.FullName</p>
+                            </div>
+                        </div>
+                        <div class="mt-8 flex gap-4">
+                            <a asp-controller="Appointments" asp-action="Details" asp-route-id="@next.AppointmentId"
+                               class="bg-white text-primary px-6 py-2 rounded-full font-button hover:bg-slate-50 transition-colors">
+                                View Details
+                            </a>
+                            <form method="post" asp-controller="Appointments" asp-action="Cancel" asp-route-id="@next.AppointmentId"
+                                  onsubmit="return confirm('Cancel this appointment?')" style="display:inline">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="bg-transparent border border-white/50 px-6 py-2 rounded-full font-button hover:bg-white/10 transition-colors">
+                                    Cancel
+                                </button>
+                            </form>
+                        </div>
+                    }
+                    else
+                    {
+                        <h2 class="font-h2 text-h2 mb-4">Book your first visit</h2>
+                        <a asp-controller="Appointments" asp-action="Book"
+                           class="inline-block bg-white text-primary px-6 py-3 rounded-full font-button hover:bg-slate-50 transition-colors">
+                            Book Appointment
+                        </a>
+                    }
+                </div>
+                <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl pointer-events-none"></div>
+            </div>
+
+            <!-- Account Summary -->
+            <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 flex flex-col justify-between">
+                <div>
+                    <h3 class="font-h3 text-h3 text-on-surface mb-4">Account Summary</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between p-3 rounded-xl bg-surface-container-low">
+                            <span class="text-on-surface-variant font-label-sm">Upcoming Visits</span>
+                            <span class="text-primary font-bold">@appointments.Count</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 rounded-xl bg-surface-container-low">
+                            <span class="text-on-surface-variant font-label-sm">Pending Bills</span>
+                            <span class="@(unpaidBills > 0 ? "text-error" : "text-secondary") font-bold">@unpaidBills</span>
+                        </div>
+                    </div>
+                </div>
+                <a asp-controller="Appointments" asp-action="Book"
+                   class="w-full mt-6 py-3 border border-outline rounded-xl font-button text-on-surface hover:bg-slate-50 transition-colors text-center block">
+                    Book New Appointment
+                </a>
+            </div>
+        </div>
+
+        <!-- Upcoming Appointments Table -->
+        <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="font-h3 text-h3 text-on-surface">Upcoming Appointments</h3>
+                <a asp-controller="Appointments" asp-action="Index" class="text-primary font-button text-label-sm hover:underline">See All</a>
+            </div>
+            @if (!appointments.Any())
+            {
+                <div class="text-center py-12 text-on-surface-variant">
+                    <span class="material-symbols-outlined text-5xl text-outline mb-4 block">calendar_today</span>
+                    <p class="font-body-md">No upcoming appointments.</p>
+                    <a asp-controller="Appointments" asp-action="Book" class="inline-block mt-4 bg-primary text-on-primary px-6 py-3 rounded-full font-button hover:bg-primary-container transition-all">
+                        Book Now
+                    </a>
+                </div>
+            }
+            else
+            {
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b border-slate-100">
+                                <th class="text-left py-3 px-4 font-label-sm text-on-surface-variant">Date & Time</th>
+                                <th class="text-left py-3 px-4 font-label-sm text-on-surface-variant">Dentist</th>
+                                <th class="text-left py-3 px-4 font-label-sm text-on-surface-variant">Purpose</th>
+                                <th class="text-left py-3 px-4 font-label-sm text-on-surface-variant">Status</th>
+                                <th class="text-left py-3 px-4 font-label-sm text-on-surface-variant"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var a in appointments)
+                            {
+                                <tr class="border-b border-slate-50 hover:bg-surface-container-low transition-colors">
+                                    <td class="py-4 px-4 font-medium text-on-surface whitespace-nowrap">@a.AppointmentDate.ToString("MMM dd, yyyy hh:mm tt")</td>
+                                    <td class="py-4 px-4 text-on-surface-variant">Dr. @a.Dentist?.FullName</td>
+                                    <td class="py-4 px-4 text-on-surface-variant">@a.Purpose</td>
+                                    <td class="py-4 px-4">
+                                        <span class="px-3 py-1 rounded-full text-xs font-semibold
+                                            @(a.Status == "Scheduled" ? "bg-sky-100 text-sky-700" :
+                                              a.Status == "Completed" ? "bg-green-100 text-green-700" :
+                                              "bg-red-100 text-red-700")">
+                                            @a.Status
+                                        </span>
+                                    </td>
+                                    <td class="py-4 px-4">
+                                        <a asp-controller="Appointments" asp-action="Details" asp-route-id="@a.AppointmentId"
+                                           class="text-primary hover:underline font-label-sm">View</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </main>
+</div>

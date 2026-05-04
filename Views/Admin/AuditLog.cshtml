@@ -1,0 +1,43 @@
+@model List<DentalClinic.Models.AuditLog>
+@{ ViewData["Title"] = "Audit Log"; }
+<div class="max-w-7xl mx-auto px-8 py-10">
+    <div class="flex items-center justify-between mb-8">
+        <div>
+            <h1 class="font-h2 text-h2 text-on-surface">Audit Log</h1>
+            <p class="text-on-surface-variant text-sm mt-1">Security audit trail — last 200 entries</p>
+        </div>
+        <div class="flex items-center gap-2 bg-surface-container-low px-4 py-2 rounded-full">
+            <span class="material-symbols-outlined text-primary text-[18px] fill-icon">security</span>
+            <span class="font-label-sm text-label-sm text-on-surface-variant">@Model.Count entries</span>
+        </div>
+    </div>
+    <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="bg-surface-container-low border-b border-slate-100">
+                        <th class="text-left py-4 px-6 font-label-sm text-on-surface-variant">Timestamp</th>
+                        <th class="text-left py-4 px-6 font-label-sm text-on-surface-variant">User</th>
+                        <th class="text-left py-4 px-6 font-label-sm text-on-surface-variant">Action</th>
+                        <th class="text-left py-4 px-6 font-label-sm text-on-surface-variant">Table</th>
+                        <th class="text-left py-4 px-6 font-label-sm text-on-surface-variant">Record</th>
+                        <th class="text-left py-4 px-6 font-label-sm text-on-surface-variant">IP Address</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var log in Model)
+                    {
+                        <tr class="border-b border-slate-50 hover:bg-surface-container-low transition-colors">
+                            <td class="py-3 px-6 text-on-surface-variant whitespace-nowrap text-xs">@log.PerformedAt.ToLocalTime().ToString("MMM dd HH:mm:ss")</td>
+                            <td class="py-3 px-6 font-medium text-on-surface">@(log.User?.Username ?? "—")</td>
+                            <td class="py-3 px-6 text-on-surface-variant">@log.Action</td>
+                            <td class="py-3 px-6"><code class="bg-surface-container px-2 py-0.5 rounded text-xs text-on-surface-variant">@log.TableAffected</code></td>
+                            <td class="py-3 px-6 text-on-surface-variant text-xs">@(log.RecordId?.ToString() ?? "—")</td>
+                            <td class="py-3 px-6"><code class="text-xs text-on-surface-variant">@(log.IpAddress ?? "—")</code></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] – PureSmile Dental</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Satoshi:wght@300;400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#0A2540", "primary-light": "#1a3a5c",
+              accent: "#00B4D8", "accent-glow": "#48CAE4",
+              teal: "#0077B6", "teal-light": "#0096C7",
+              gold: "#FFB703", surface: "#F0F7FF",
+              "card-bg": "rgba(255,255,255,0.85)",
+            },
+            fontFamily: {
+              clash: ["'Clash Display'", "sans-serif"],
+              satoshi: ["'Satoshi'", "sans-serif"],
+              inter: ["'Inter'", "sans-serif"],
+            },
+            animation: {
+              "fade-up": "fadeUp 0.6s ease forwards",
+              "fade-in": "fadeIn 0.5s ease forwards",
+              "float": "float 6s ease-in-out infinite",
+              "pulse-slow": "pulse 4s cubic-bezier(0.4,0,0.6,1) infinite",
+              "slide-left": "slideLeft 0.5s ease forwards",
+              "shimmer": "shimmer 2s infinite",
+              "glow": "glow 2s ease-in-out infinite alternate",
+              "spin-slow": "spin 8s linear infinite",
+              "bounce-slow": "bounce 3s infinite",
+              "scale-in": "scaleIn 0.4s ease forwards",
+            },
+            keyframes: {
+              fadeUp: { "0%": { opacity: 0, transform: "translateY(30px)" }, "100%": { opacity: 1, transform: "translateY(0)" } },
+              fadeIn: { "0%": { opacity: 0 }, "100%": { opacity: 1 } },
+              float: { "0%,100%": { transform: "translateY(0)" }, "50%": { transform: "translateY(-20px)" } },
+              slideLeft: { "0%": { opacity: 0, transform: "translateX(30px)" }, "100%": { opacity: 1, transform: "translateX(0)" } },
+              shimmer: { "0%": { backgroundPosition: "-200% 0" }, "100%": { backgroundPosition: "200% 0" } },
+              glow: { "0%": { boxShadow: "0 0 20px rgba(0,180,216,0.3)" }, "100%": { boxShadow: "0 0 40px rgba(0,180,216,0.7)" } },
+              scaleIn: { "0%": { opacity: 0, transform: "scale(0.9)" }, "100%": { opacity: 1, transform: "scale(1)" } },
+            },
+            backdropBlur: { xs: "2px" },
+          }
+        }
+      }
+    </script>
+    <style>
+      .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+      .fill-icon { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+      body { font-family: 'Satoshi', sans-serif; }
+      .font-clash { font-family: 'Clash Display', sans-serif; }
+      
+      /* Glass morphism */
+      .glass { background: rgba(255,255,255,0.15); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.2); }
+      .glass-dark { background: rgba(10,37,64,0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); }
+      .glass-white { background: rgba(255,255,255,0.9); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.6); }
+      
+      /* Gradient text */
+      .gradient-text { background: linear-gradient(135deg, #00B4D8, #0077B6, #48CAE4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+      .gradient-text-gold { background: linear-gradient(135deg, #FFB703, #FB8500); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+      
+      /* Animated gradient bg */
+      .animated-bg { background: linear-gradient(-45deg, #0A2540, #023E8A, #0077B6, #00B4D8); background-size: 400% 400%; animation: gradientShift 15s ease infinite; }
+      @@keyframes gradientShift { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
+      
+      /* Noise texture overlay */
+      .noise::before { content:''; position:absolute; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events:none; z-index:1; }
+      
+      /* Glow button */
+      .btn-glow { position:relative; overflow:hidden; }
+      .btn-glow::after { content:''; position:absolute; inset:-2px; background:linear-gradient(135deg,#00B4D8,#0077B6,#48CAE4,#00B4D8); background-size:300% 300%; animation:gradientShift 3s ease infinite; border-radius:inherit; z-index:-1; filter:blur(8px); opacity:0; transition:opacity 0.3s; }
+      .btn-glow:hover::after { opacity:1; }
+      
+      /* Card hover */
+      .card-hover { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+      .card-hover:hover { transform: translateY(-6px); box-shadow: 0 20px 60px rgba(0,119,182,0.2); }
+      
+      /* Animated underline */
+      .animated-underline { position:relative; }
+      .animated-underline::after { content:''; position:absolute; bottom:-2px; left:0; width:0; height:2px; background:linear-gradient(90deg,#00B4D8,#48CAE4); transition:width 0.3s ease; }
+      .animated-underline:hover::after { width:100%; }
+      
+      /* Scroll animations */
+      .reveal { opacity:0; transform:translateY(40px); transition:opacity 0.7s ease, transform 0.7s ease; }
+      .reveal.visible { opacity:1; transform:translateY(0); }
+      .reveal-left { opacity:0; transform:translateX(-40px); transition:opacity 0.7s ease, transform 0.7s ease; }
+      .reveal-left.visible { opacity:1; transform:translateX(0); }
+      .reveal-right { opacity:0; transform:translateX(40px); transition:opacity 0.7s ease, transform 0.7s ease; }
+      .reveal-right.visible { opacity:1; transform:translateX(0); }
+      
+      /* Input focus glow */
+      .input-glow:focus { box-shadow: 0 0 0 3px rgba(0,180,216,0.2); outline: none; }
+
+      /* Particle canvas */
+      #particles { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:0; opacity:0.4; }
+
+      /* Status badge */
+      .badge-scheduled { background:rgba(0,180,216,0.1); color:#0077B6; border:1px solid rgba(0,180,216,0.3); }
+      .badge-completed { background:rgba(34,197,94,0.1); color:#16a34a; border:1px solid rgba(34,197,94,0.3); }
+      .badge-cancelled { background:rgba(239,68,68,0.1); color:#dc2626; border:1px solid rgba(239,68,68,0.3); }
+      .badge-paid { background:rgba(34,197,94,0.1); color:#16a34a; border:1px solid rgba(34,197,94,0.3); }
+      .badge-unpaid { background:rgba(239,68,68,0.1); color:#dc2626; border:1px solid rgba(239,68,68,0.3); }
+      .badge-partial { background:rgba(251,191,36,0.1); color:#d97706; border:1px solid rgba(251,191,36,0.3); }
+
+      /* Sidebar */
+      .sidebar-link { display:flex; align-items:center; gap:12px; padding:12px 16px; border-radius:12px; color:#64748b; font-weight:500; transition:all 0.2s ease; }
+      .sidebar-link:hover { background:rgba(0,180,216,0.08); color:#0077B6; }
+      .sidebar-link.active { background:linear-gradient(135deg,rgba(0,180,216,0.15),rgba(0,119,182,0.1)); color:#0077B6; font-weight:600; }
+      .sidebar-link .material-symbols-outlined { font-size:20px; }
+
+      /* Table */
+      .data-table th { background:#F0F7FF; color:#0A2540; font-family:'Inter',sans-serif; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:0.05em; padding:14px 20px; }
+      .data-table td { padding:16px 20px; border-bottom:1px solid rgba(0,0,0,0.05); }
+      .data-table tr:hover td { background:rgba(0,180,216,0.03); }
+
+      /* Shimmer loading */
+      .shimmer-bg { background:linear-gradient(90deg,#f0f7ff 25%,#e0eeff 50%,#f0f7ff 75%); background-size:200% 100%; animation:shimmer 1.5s infinite; }
+
+      /* Cursor glow */
+      .cursor-glow { position:fixed; width:300px; height:300px; border-radius:50%; background:radial-gradient(circle,rgba(0,180,216,0.05) 0%,transparent 70%); pointer-events:none; transform:translate(-50%,-50%); transition:left 0.1s,top 0.1s; z-index:9999; }
+    </style>
+</head>
+<body class="bg-surface text-primary min-h-screen flex flex-col">
+
+<!-- Cursor glow effect -->
+<div class="cursor-glow" id="cursorGlow"></div>
+
+<!-- ── NAVBAR ──────────────────────────────────────────────── -->
+<nav class="glass-white fixed top-0 w-full z-50 shadow-sm" style="border-bottom:1px solid rgba(0,119,182,0.1)">
+    <div class="max-w-7xl mx-auto px-6 flex justify-between items-center h-18" style="height:72px">
+        <!-- Brand -->
+        <a asp-controller="Landing" asp-action="Index" class="flex items-center gap-3 group">
+            <div class="w-10 h-10 rounded-xl animated-bg flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                <span class="material-symbols-outlined text-white fill-icon" style="font-size:22px">health_and_safety</span>
+            </div>
+            <div>
+                <span class="font-clash font-semibold text-xl text-primary tracking-tight">PureSmile</span>
+                <span class="font-clash font-semibold text-xl gradient-text tracking-tight"> Dental</span>
+            </div>
+        </a>
+
+        <!-- Nav Links -->
+        <div class="hidden md:flex items-center gap-8">
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <a asp-controller="Home" asp-action="Index" class="animated-underline text-slate-600 hover:text-teal font-medium transition-colors text-sm">Dashboard</a>
+                <a asp-controller="Appointments" asp-action="Index" class="animated-underline text-slate-600 hover:text-teal font-medium transition-colors text-sm">Appointments</a>
+                @if (User.IsInRole("Admin") || User.IsInRole("Dentist"))
+                {
+                    <a asp-controller="Patients" asp-action="Index" class="animated-underline text-slate-600 hover:text-teal font-medium transition-colors text-sm">Patients</a>
+                }
+                @if (User.IsInRole("Admin"))
+                {
+                    <a asp-controller="Admin" asp-action="Index" class="animated-underline text-slate-600 hover:text-teal font-medium transition-colors text-sm">Admin</a>
+                }
+                <a asp-controller="Billing" asp-action="Index" class="animated-underline text-slate-600 hover:text-teal font-medium transition-colors text-sm">Billing</a>
+            }
+            else
+            {
+                <a href="#services" class="animated-underline text-slate-600 hover:text-teal font-medium transition-colors text-sm">Services</a>
+                <a href="#dentists" class="animated-underline text-slate-600 hover:text-teal font-medium transition-colors text-sm">Our Dentists</a>
+                <a href="#about" class="animated-underline text-slate-600 hover:text-teal font-medium transition-colors text-sm">About</a>
+                <a href="#contact" class="animated-underline text-slate-600 hover:text-teal font-medium transition-colors text-sm">Contact</a>
+            }
+        </div>
+
+        <!-- Right -->
+        <div class="flex items-center gap-3">
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <div class="hidden md:flex items-center gap-2 px-4 py-2 rounded-full" style="background:rgba(0,180,216,0.08)">
+                    <div class="w-7 h-7 rounded-full animated-bg flex items-center justify-center">
+                        <span class="text-white text-xs font-bold">@User.Identity.Name?[0].ToString().ToUpper()</span>
+                    </div>
+                    <span class="text-sm font-medium text-primary">@User.Identity.Name</span>
+                    <span class="text-xs px-2 py-0.5 rounded-full text-white font-semibold" style="background:linear-gradient(135deg,#0077B6,#00B4D8)">
+                        @User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value
+                    </span>
+                </div>
+                @if (User.IsInRole("Patient"))
+                {
+                    <a asp-controller="Appointments" asp-action="Book"
+                       class="btn-glow px-5 py-2.5 rounded-xl text-white font-semibold text-sm shadow-lg transition-all hover:scale-105"
+                       style="background:linear-gradient(135deg,#0077B6,#00B4D8)">
+                        Book Now
+                    </a>
+                }
+                <a asp-controller="Account" asp-action="Logout"
+                   class="w-9 h-9 rounded-xl flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all">
+                    <span class="material-symbols-outlined text-[20px]">logout</span>
+                </a>
+            }
+            else
+            {
+                <a asp-controller="Account" asp-action="Login"
+                   class="text-sm font-medium text-slate-600 hover:text-teal transition-colors px-4 py-2 rounded-xl hover:bg-teal/5">
+                    Sign In
+                </a>
+                <a asp-controller="Account" asp-action="Register"
+                   class="btn-glow px-5 py-2.5 rounded-xl text-white font-semibold text-sm shadow-lg transition-all hover:scale-105"
+                   style="background:linear-gradient(135deg,#0077B6,#00B4D8)">
+                    Get Started
+                </a>
+            }
+        </div>
+    </div>
+</nav>
+
+<!-- ── ALERTS ──────────────────────────────────────────────── -->
+@if (TempData["Success"] != null)
+{
+    <div id="alert-s" class="fixed top-24 right-6 z-50 flex items-center gap-3 bg-white px-5 py-4 rounded-2xl shadow-xl max-w-sm animate-scale-in" style="border-left:4px solid #00B4D8">
+        <div class="w-8 h-8 rounded-full flex items-center justify-center" style="background:rgba(0,180,216,0.1)">
+            <span class="material-symbols-outlined fill-icon text-accent" style="font-size:18px">check_circle</span>
+        </div>
+        <span class="text-sm font-medium text-primary">@TempData["Success"]</span>
+        <button onclick="document.getElementById('alert-s').remove()" class="ml-auto text-slate-300 hover:text-slate-500">
+            <span class="material-symbols-outlined" style="font-size:16px">close</span>
+        </button>
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div id="alert-e" class="fixed top-24 right-6 z-50 flex items-center gap-3 bg-white px-5 py-4 rounded-2xl shadow-xl max-w-sm animate-scale-in" style="border-left:4px solid #ef4444">
+        <div class="w-8 h-8 rounded-full flex items-center justify-center bg-red-50">
+            <span class="material-symbols-outlined fill-icon text-red-500" style="font-size:18px">error</span>
+        </div>
+        <span class="text-sm font-medium text-primary">@TempData["Error"]</span>
+        <button onclick="document.getElementById('alert-e').remove()" class="ml-auto text-slate-300 hover:text-slate-500">
+            <span class="material-symbols-outlined" style="font-size:16px">close</span>
+        </button>
+    </div>
+}
+
+<!-- ── MAIN ──────────────────────────────────────────────────── -->
+<main class="flex-1 pt-[72px]">@RenderBody()</main>
+
+<!-- ── FOOTER ────────────────────────────────────────────────── -->
+@if (!ViewData.ContainsKey("HideFooter"))
+{
+<footer style="background:linear-gradient(135deg,#0A2540,#023E8A)" class="text-white mt-auto">
+    <div class="max-w-7xl mx-auto px-6 py-16">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+            <div class="md:col-span-2">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 rounded-xl bg-accent/20 flex items-center justify-center">
+                        <span class="material-symbols-outlined fill-icon text-accent" style="font-size:22px">health_and_safety</span>
+                    </div>
+                    <span class="font-clash text-2xl font-semibold">PureSmile Dental</span>
+                </div>
+                <p class="text-blue-200 text-sm leading-relaxed max-w-xs">
+                    Empathetic precision in modern dentistry. We combine clinical excellence with a patient-first approach to make every visit comfortable and transformative.
+                </p>
+                <div class="flex gap-3 mt-6">
+                    @foreach (var icon in new[]{"facebook","open_in_new","camera_alt"})
+                    {
+                        <button class="w-9 h-9 rounded-xl flex items-center justify-center transition-all hover:scale-110" style="background:rgba(255,255,255,0.1)">
+                            <span class="material-symbols-outlined text-blue-200" style="font-size:16px">@icon</span>
+                        </button>
+                    }
+                </div>
+            </div>
+            <div>
+                <h4 class="font-clash font-semibold mb-4 text-white">Services</h4>
+                <ul class="space-y-2">
+                    @foreach (var s in new[]{"General Dentistry","Teeth Whitening","Orthodontics","Oral Surgery","Emergency Care","Pediatric Dental"})
+                    {
+                        <li><a href="#" class="text-blue-200 text-sm hover:text-accent transition-colors animated-underline">@s</a></li>
+                    }
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-clash font-semibold mb-4 text-white">Contact</h4>
+                <ul class="space-y-3">
+                    @foreach (var (icon, text) in new[]{("location_on","Tacloban City, Leyte"),("call","(053) 832-1234"),("mail","hello@puresmile.ph"),("schedule","Mon–Sat: 8AM – 6PM")})
+                    {
+                        <li class="flex items-start gap-2 text-blue-200 text-sm">
+                            <span class="material-symbols-outlined text-accent shrink-0" style="font-size:16px;margin-top:2px">@icon</span>
+                            @text
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+        <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p class="text-blue-300 text-xs">© @DateTime.Now.Year PureSmile Dental Clinic. ITP 321 Final Project – ADFC Tacloban.</p>
+            <div class="flex gap-6">
+                @foreach (var l in new[]{"Privacy Policy","Terms of Service","Accessibility"})
+                {
+                    <a href="#" class="text-blue-300 text-xs hover:text-accent transition-colors">@l</a>
+                }
+            </div>
+        </div>
+    </div>
+</footer>
+}
+
+<script>
+// Cursor glow
+const glow = document.getElementById('cursorGlow');
+if(glow) document.addEventListener('mousemove', e => {
+    glow.style.left = e.clientX + 'px';
+    glow.style.top = e.clientY + 'px';
+});
+
+// Auto-dismiss alerts
+setTimeout(()=>{
+    ['alert-s','alert-e'].forEach(id=>{ const el=document.getElementById(id); if(el){el.style.transition='all 0.5s';el.style.opacity='0';el.style.transform='translateX(20px)';setTimeout(()=>el?.remove(),500);} });
+}, 4000);
+
+// Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if(entry.isIntersecting) { entry.target.classList.add('visible'); }
+    });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal,.reveal-left,.reveal-right').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

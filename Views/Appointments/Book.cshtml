@@ -1,0 +1,118 @@
+@model DentalClinic.Models.AppointmentViewModel
+@{ ViewData["Title"] = "Book Appointment"; }
+
+<main class="pt-8 pb-xl px-8 max-w-4xl mx-auto">
+    <!-- Page Header -->
+    <div class="mb-8">
+        <h1 class="font-h2 text-h2 text-primary mb-2">Book an Appointment</h1>
+        <p class="text-on-surface-variant font-body-md">Fill in the details below to schedule your dental visit.</p>
+    </div>
+
+    <!-- Progress steps -->
+    <div class="mb-8">
+        <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center text-sm font-bold">1</div>
+                <span class="font-label-sm text-primary">Dentist</span>
+            </div>
+            <div class="flex-1 h-0.5 bg-surface-container"></div>
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-full bg-surface-container text-on-surface-variant flex items-center justify-center text-sm font-bold">2</div>
+                <span class="font-label-sm text-on-surface-variant">Schedule</span>
+            </div>
+            <div class="flex-1 h-0.5 bg-surface-container"></div>
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-full bg-surface-container text-on-surface-variant flex items-center justify-center text-sm font-bold">3</div>
+                <span class="font-label-sm text-on-surface-variant">Details</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-[0px_4px_20px_rgba(0,0,0,0.05)] p-8 border border-outline-variant/30">
+
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="mb-6 flex items-start gap-3 bg-error-container text-on-error-container px-4 py-3 rounded-lg">
+                <span class="material-symbols-outlined text-error text-[20px] mt-0.5">error</span>
+                <div asp-validation-summary="All" class="text-sm"></div>
+            </div>
+        }
+
+        <form method="post">
+            @Html.AntiForgeryToken()
+
+            <!-- Select Dentist -->
+            <section class="mb-10">
+                <h2 class="font-h3 text-h3 text-primary mb-2">Choose Your Specialist</h2>
+                <p class="text-on-surface-variant text-sm mb-5">Select a dentist for your appointment.</p>
+                <div class="space-y-1">
+                    <label class="block font-label-sm text-label-sm text-on-surface-variant mb-2">Dentist *</label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline text-lg">medical_services</span>
+                        <select asp-for="DentistId" asp-items="ViewBag.Dentists"
+                                class="w-full pl-12 pr-4 py-3 bg-white border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none font-body-md appearance-none">
+                            <option value="">-- Select a Dentist --</option>
+                        </select>
+                    </div>
+                    <span asp-validation-for="DentistId" class="text-error text-xs"></span>
+                </div>
+            </section>
+
+            <div class="border-t border-slate-100 pt-8 mb-10">
+                <h2 class="font-h3 text-h3 text-primary mb-2">Pick a Date & Time</h2>
+                <p class="text-on-surface-variant text-sm mb-5">Select an available slot that works for you.</p>
+                <div class="space-y-1">
+                    <label class="block font-label-sm text-label-sm text-on-surface-variant mb-2">Preferred Date & Time *</label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline text-lg">calendar_month</span>
+                        <input asp-for="AppointmentDate" type="datetime-local"
+                               min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")"
+                               class="w-full pl-12 pr-4 py-3 bg-white border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none font-body-md"/>
+                    </div>
+                    <span asp-validation-for="AppointmentDate" class="text-error text-xs"></span>
+                    <div class="mt-2 flex items-center gap-2 px-4 py-3 bg-surface-container rounded-lg border-l-4 border-primary">
+                        <span class="material-symbols-outlined text-primary text-[18px]">info</span>
+                        <p class="text-xs text-on-surface-variant">Appointments cannot be booked within 30 minutes of existing schedules.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-slate-100 pt-8">
+                <h2 class="font-h3 text-h3 text-primary mb-2">Visit Details</h2>
+                <p class="text-on-surface-variant text-sm mb-5">Tell us more about your dental concern.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="md:col-span-2 space-y-1">
+                        <label class="block font-label-sm text-label-sm text-on-surface-variant mb-2">Purpose of Visit *</label>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-4 top-4 text-outline text-lg">dentistry</span>
+                            <input asp-for="Purpose"
+                                   class="w-full pl-12 pr-4 py-3 bg-white border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none font-body-md"
+                                   placeholder="e.g., Tooth extraction, Cleaning, Check-up"/>
+                        </div>
+                        <span asp-validation-for="Purpose" class="text-error text-xs"></span>
+                    </div>
+                    <div class="md:col-span-2 space-y-1">
+                        <label class="block font-label-sm text-label-sm text-on-surface-variant mb-2">Additional Notes <span class="text-outline">(Optional)</span></label>
+                        <textarea asp-for="Notes" rows="3"
+                                  class="w-full px-4 py-3 bg-white border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none font-body-md"
+                                  placeholder="Any specific concerns or medical history we should know?"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="mt-10 pt-8 border-t border-slate-100 flex justify-between items-center">
+                <a asp-controller="Appointments" asp-action="Index"
+                   class="flex items-center gap-2 text-on-surface-variant font-button hover:text-primary transition-colors">
+                    <span class="material-symbols-outlined">arrow_back</span>
+                    <span>Back</span>
+                </a>
+                <button type="submit"
+                        class="bg-primary text-on-primary px-10 py-4 rounded-full font-button shadow-lg hover:shadow-xl hover:bg-primary-container transition-all hover:scale-[1.02] active:scale-95 flex items-center gap-2">
+                    Confirm Appointment
+                    <span class="material-symbols-outlined text-[20px]">check_circle</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</main>

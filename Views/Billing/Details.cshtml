@@ -1,0 +1,84 @@
+@model DentalClinic.Models.Billing
+@{ ViewData["Title"] = $"Bill #{Model.BillId}"; }
+<div class="max-w-2xl mx-auto px-8 py-10">
+    <div class="flex items-center justify-between mb-8 print:hidden">
+        <h1 class="font-h2 text-h2 text-on-surface">Bill #@Model.BillId</h1>
+        <div class="flex gap-3">
+            <button onclick="window.print()" class="flex items-center gap-2 border border-outline-variant text-on-surface px-5 py-2 rounded-full font-button hover:bg-surface-container transition-all">
+                <span class="material-symbols-outlined text-[18px]">print</span> Print
+            </button>
+            <a asp-action="Index" class="flex items-center gap-2 text-on-surface-variant hover:text-primary font-button transition-colors">
+                <span class="material-symbols-outlined">arrow_back</span> Back
+            </a>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-8" id="receipt">
+        <div class="text-center border-b border-slate-100 pb-6 mb-6">
+            <span class="material-symbols-outlined text-primary text-4xl fill-icon block mb-2">health_and_safety</span>
+            <h2 class="text-xl font-bold text-sky-800">PureSmile Dental</h2>
+            <p class="text-on-surface-variant text-sm">Official Receipt</p>
+            <span class="inline-block mt-3 px-4 py-1 rounded-full text-sm font-semibold
+                @(Model.PaymentStatus=="Paid"?"bg-green-100 text-green-700":Model.PaymentStatus=="Partial"?"bg-yellow-100 text-yellow-700":"bg-red-100 text-red-700")">
+                @Model.PaymentStatus.ToUpper()
+            </span>
+        </div>
+
+        <div class="grid grid-cols-2 gap-6 mb-6">
+            <div>
+                <p class="text-xs text-on-surface-variant uppercase tracking-widest mb-1">Patient</p>
+                <p class="font-semibold text-on-surface">@Model.Patient?.FullName</p>
+                <p class="text-sm text-on-surface-variant">@Model.Patient?.ContactNumber</p>
+            </div>
+            <div>
+                <p class="text-xs text-on-surface-variant uppercase tracking-widest mb-1">Appointment</p>
+                <p class="text-sm text-on-surface">@Model.Appointment?.AppointmentDate.ToString("MMMM dd, yyyy hh:mm tt")</p>
+                <p class="text-sm text-on-surface-variant">Dr. @Model.Appointment?.Dentist?.FullName</p>
+                <p class="text-sm text-on-surface-variant">@Model.Appointment?.Purpose</p>
+            </div>
+        </div>
+
+        <div class="bg-surface-container-low rounded-xl p-4 mb-6">
+            <p class="text-xs text-on-surface-variant uppercase tracking-widest mb-2">Services Rendered</p>
+            <p class="text-sm text-on-surface whitespace-pre-line">@(Model.Services ?? "—")</p>
+        </div>
+
+        <div class="border-t border-slate-100 pt-4 space-y-2">
+            <div class="flex justify-between text-sm">
+                <span class="text-on-surface-variant">Total Amount</span>
+                <span class="font-semibold">₱@Model.TotalAmount.ToString("N2")</span>
+            </div>
+            <div class="flex justify-between text-sm">
+                <span class="text-on-surface-variant">Amount Paid</span>
+                <span class="font-semibold text-green-600">₱@Model.AmountPaid.ToString("N2")</span>
+            </div>
+            <div class="flex justify-between text-base font-bold border-t border-slate-100 pt-2">
+                <span>Balance Due</span>
+                <span class="@(Model.TotalAmount-Model.AmountPaid>0?"text-error":"text-green-600")">
+                    ₱@((Model.TotalAmount - Model.AmountPaid).ToString("N2"))
+                </span>
+            </div>
+        </div>
+
+        <p class="text-center text-xs text-on-surface-variant mt-6">Issued: @Model.IssuedAt.ToLocalTime().ToString("MMMM dd, yyyy hh:mm tt")</p>
+    </div>
+
+    @if (User.IsInRole("Admin") && Model.PaymentStatus != "Paid")
+    {
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 mt-6 print:hidden">
+            <h3 class="font-h3 text-h3 text-on-surface mb-4">Update Payment</h3>
+            <form method="post" asp-action="UpdatePayment" asp-route-id="@Model.BillId" class="flex gap-4 items-end">
+                @Html.AntiForgeryToken()
+                <div class="flex-1">
+                    <label class="block font-label-sm text-label-sm text-on-surface-variant mb-2">New Amount Paid (₱)</label>
+                    <input name="amountPaid" type="number" step="0.01" min="0" max="@Model.TotalAmount" value="@Model.AmountPaid"
+                           class="w-full px-4 py-3 bg-white border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none font-body-md"/>
+                </div>
+                <button type="submit" class="bg-green-600 text-white px-6 py-3 rounded-full font-button hover:bg-green-700 transition-all">
+                    Update
+                </button>
+            </form>
+        </div>
+    }
+</div>
+<style>@@media print { .print\\:hidden { display: none !important; } #receipt { box-shadow: none; border: 1px solid #ccc; } }</style>

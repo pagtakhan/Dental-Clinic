@@ -1,0 +1,41 @@
+@{ ViewData["Title"] = "Add Dentist"; }
+<div class="max-w-2xl mx-auto px-8 py-10">
+    <div class="flex items-center justify-between mb-8">
+        <div>
+            <h1 class="font-h2 text-h2 text-on-surface">Add Dentist</h1>
+            <p class="text-on-surface-variant text-sm mt-1">Create a new dentist account</p>
+        </div>
+        <a asp-action="Users" class="flex items-center gap-2 text-on-surface-variant hover:text-primary font-button transition-colors">
+            <span class="material-symbols-outlined">arrow_back</span> Back
+        </a>
+    </div>
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-8">
+        <div asp-validation-summary="All" class="mb-5 text-error text-sm"></div>
+        <form method="post" class="space-y-5">
+            @Html.AntiForgeryToken()
+            @foreach (var (label, name, type, placeholder) in new[]{
+                ("Username *","username","text","Choose a username"),
+                ("Email *","email","email","dentist@clinic.com"),
+                ("Password *","password","password","Min. 8 characters"),
+                ("Full Name *","fullName","text","Dr. Juan Dela Cruz"),
+                ("Specialization","specialization","text","e.g., Orthodontist"),
+                ("Contact Number","contactNumber","text","09XXXXXXXXX")
+            })
+            {
+                <div>
+                    <label class="block font-label-sm text-label-sm text-on-surface-variant mb-2">@label</label>
+                    <input name="@name" type="@type" placeholder="@placeholder" @(name=="specialization"?"value=\"General Dentistry\"":"")
+                           class="w-full px-4 py-3 bg-white border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none font-body-md"/>
+                </div>
+            }
+            <div class="flex gap-4 pt-4">
+                <button type="submit" class="flex-1 bg-primary text-on-primary py-4 rounded-full font-button hover:bg-primary-container transition-all">
+                    Create Dentist Account
+                </button>
+                <a asp-action="Users" class="px-6 py-4 border border-outline-variant text-on-surface rounded-full font-button hover:bg-surface-container transition-all text-center">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>

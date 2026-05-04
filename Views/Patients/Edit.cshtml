@@ -1,0 +1,47 @@
+@model DentalClinic.Models.Patient
+@{ ViewData["Title"] = "Edit Patient"; }
+
+<div class="page-header">
+    <h1>✏️ Edit Patient Record</h1>
+    <a asp-action="Details" asp-route-id="@Model.PatientId" class="btn btn-outline">← Back</a>
+</div>
+
+<div class="form-card" style="max-width:700px">
+    <form method="post">
+        @Html.AntiForgeryToken()
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem">
+            <div class="form-group">
+                <label>Full Name *</label>
+                <input name="FullName" value="@Model.FullName" class="form-control" required />
+            </div>
+            <div class="form-group">
+                <label>Date of Birth *</label>
+                <input name="DateOfBirth" type="date" class="form-control"
+                       value="@Model.DateOfBirth.ToString("yyyy-MM-dd")" required />
+            </div>
+            <div class="form-group">
+                <label>Contact Number</label>
+                <input name="ContactNumber" value="@Model.ContactNumber" class="form-control" />
+            </div>
+            <div class="form-group" style="grid-column:1/-1">
+                <label>Address</label>
+                <input name="Address" value="@Model.Address" class="form-control" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Known Allergies</label>
+            <textarea name="Allergies" class="form-control">@Model.Allergies</textarea>
+        </div>
+        <div class="form-group">
+            <label>Medical History</label>
+            <textarea name="MedicalHistory" class="form-control" rows="4">@Model.MedicalHistory</textarea>
+        </div>
+
+        <div style="display:flex; gap:1rem; margin-top:1rem">
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <a asp-action="Details" asp-route-id="@Model.PatientId" class="btn btn-outline">Cancel</a>
+        </div>
+    </form>
+</div>

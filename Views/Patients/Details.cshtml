@@ -1,0 +1,105 @@
+@model DentalClinic.Models.Patient
+@{ ViewData["Title"] = "Patient: " + Model.FullName; }
+<div class="max-w-5xl mx-auto px-8 py-10">
+    <div class="flex items-center justify-between mb-8">
+        <div class="flex items-center gap-4">
+            <div class="w-14 h-14 rounded-full bg-primary-fixed flex items-center justify-center text-primary font-bold text-xl">@Model.FullName[0]</div>
+            <div>
+                <h1 class="font-h2 text-h2 text-on-surface">@Model.FullName</h1>
+                <p class="text-on-surface-variant text-sm">Patient ID #@Model.PatientId</p>
+            </div>
+        </div>
+        <div class="flex gap-3">
+            @if (User.IsInRole("Admin"))
+            {
+                <a asp-action="Edit" asp-route-id="@Model.PatientId" class="border border-primary text-primary px-5 py-2 rounded-full font-button hover:bg-primary hover:text-on-primary transition-all">Edit</a>
+            }
+            <a asp-action="Index" class="flex items-center gap-2 text-on-surface-variant hover:text-primary font-button transition-colors"><span class="material-symbols-outlined">arrow_back</span> Back</a>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+            <h3 class="font-h3 text-h3 text-on-surface mb-4 flex items-center gap-2"><span class="material-symbols-outlined text-primary">person</span> Personal Info</h3>
+            <div class="space-y-3 text-sm">
+                @foreach (var (label, val) in new[]{("Full Name",Model.FullName),("Date of Birth",Model.DateOfBirth.ToString("MMMM dd, yyyy")),("Age",$"{(DateTime.Today - Model.DateOfBirth).Days / 365} years old"),("Contact",Model.ContactNumber ?? "—"),("Address",Model.Address ?? "—"),("Username",Model.User?.Username ?? "—")})
+                {
+                    <div class="flex justify-between py-2 border-b border-slate-50">
+                        <span class="text-on-surface-variant">@label</span>
+                        <span class="font-medium text-on-surface">@val</span>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+            <h3 class="font-h3 text-h3 text-on-surface mb-4 flex items-center gap-2"><span class="material-symbols-outlined text-primary">medical_information</span> Medical Info</h3>
+            <div class="mb-4">
+                <p class="text-xs text-on-surface-variant uppercase tracking-widest mb-2">Known Allergies</p>
+                <p class="text-sm @(string.IsNullOrEmpty(Model.Allergies)?"text-on-surface-variant":"text-error font-medium")">
+                    @(string.IsNullOrEmpty(Model.Allergies) ? "None reported" : Model.Allergies)
+                </p>
+            </div>
+            <div>
+                <p class="text-xs text-on-surface-variant uppercase tracking-widest mb-2">Medical History</p>
+                <p class="text-sm text-on-surface">@(string.IsNullOrEmpty(Model.MedicalHistory) ? "—" : Model.MedicalHistory)</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 mb-6">
+        <h3 class="font-h3 text-h3 text-on-surface mb-4 flex items-center gap-2"><span class="material-symbols-outlined text-primary">calendar_today</span> Appointment History</h3>
+        @if (!Model.Appointments.Any())
+        {
+            <p class="text-on-surface-variant text-sm py-4 text-center">No appointments on record.</p>
+        }
+        else
+        {
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead><tr class="border-b border-slate-100"><th class="text-left py-3 px-4 font-label-sm text-on-surface-variant">Date</th><th class="text-left py-3 px-4 font-label-sm text-on-surface-variant">Dentist</th><th class="text-left py-3 px-4 font-label-sm text-on-surface-variant">Purpose</th><th class="text-left py-3 px-4 font-label-sm text-on-surface-variant">Status</th><th></th></tr></thead>
+                    <tbody>
+                        @foreach (var a in Model.Appointments.OrderByDescending(a => a.AppointmentDate))
+                        {
+                            <tr class="border-b border-slate-50 hover:bg-surface-container-low">
+                                <td class="py-3 px-4">@a.AppointmentDate.ToString("MMM dd, yyyy HH:mm")</td>
+                                <td class="py-3 px-4 text-on-surface-variant">Dr. @a.Dentist?.FullName</td>
+                                <td class="py-3 px-4 text-on-surface-variant">@a.Purpose</td>
+                                <td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs font-semibold @(a.Status=="Scheduled"?"bg-sky-100 text-sky-700":a.Status=="Completed"?"bg-green-100 text-green-700":"bg-red-100 text-red-700")">@a.Status</span></td>
+                                <td class="py-3 px-4"><a asp-controller="Appointments" asp-action="Details" asp-route-id="@a.AppointmentId" class="text-primary hover:underline font-label-sm text-xs">View</a></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+
+    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+        <h3 class="font-h3 text-h3 text-on-surface mb-4 flex items-center gap-2"><span class="material-symbols-outlined text-primary">payments</span> Billing</h3>
+        @if (!Model.Billings.Any())
+        {
+            <p class="text-on-surface-variant text-sm py-4 text-center">No billing records.</p>
+        }
+        else
+        {
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead><tr class="border-b border-slate-100"><th class="text-left py-3 px-4 font-label-sm text-on-surface-variant">Date</th><th class="text-left py-3 px-4 font-label-sm text-on-surface-variant">Total</th><th class="text-left py-3 px-4 font-label-sm text-on-surface-variant">Paid</th><th class="text-left py-3 px-4 font-label-sm text-on-surface-variant">Balance</th><th class="text-left py-3 px-4 font-label-sm text-on-surface-variant">Status</th><th></th></tr></thead>
+                    <tbody>
+                        @foreach (var b in Model.Billings.OrderByDescending(b => b.IssuedAt))
+                        {
+                            <tr class="border-b border-slate-50 hover:bg-surface-container-low">
+                                <td class="py-3 px-4">@b.IssuedAt.ToString("MMM dd, yyyy")</td>
+                                <td class="py-3 px-4">₱@b.TotalAmount.ToString("N2")</td>
+                                <td class="py-3 px-4 text-green-600">₱@b.AmountPaid.ToString("N2")</td>
+                                <td class="py-3 px-4 @(b.TotalAmount-b.AmountPaid>0?"text-error":"text-green-600")">₱@((b.TotalAmount-b.AmountPaid).ToString("N2"))</td>
+                                <td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs font-semibold @(b.PaymentStatus=="Paid"?"bg-green-100 text-green-700":b.PaymentStatus=="Partial"?"bg-yellow-100 text-yellow-700":"bg-red-100 text-red-700")">@b.PaymentStatus</span></td>
+                                <td class="py-3 px-4"><a asp-controller="Billing" asp-action="Details" asp-route-id="@b.BillId" class="text-primary hover:underline font-label-sm text-xs">View</a></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>

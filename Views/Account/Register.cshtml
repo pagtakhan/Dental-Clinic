@@ -1,0 +1,136 @@
+@model DentalClinic.Models.RegisterViewModel
+@{ ViewData["Title"] = "Create Account"; Layout = "_Layout"; }
+
+<main class="min-h-screen pt-12 pb-20 px-6 bg-background">
+<div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+
+    <!-- Left side brand -->
+    <div class="hidden lg:block space-y-8">
+        <div class="inline-flex items-center px-4 py-2 bg-secondary-container/30 text-on-secondary-container rounded-full border border-secondary-container/50">
+            <span class="material-symbols-outlined mr-2 text-sm">verified_user</span>
+            <span class="font-label-sm text-label-sm">Patient-First Care Network</span>
+        </div>
+        <h1 class="font-h1 text-h1 text-primary max-w-md">Your Journey to a Brighter Smile Starts Here.</h1>
+        <p class="font-body-lg text-body-lg text-on-surface-variant max-w-lg">
+            Join PureSmile today. Experience empathetic precision in modern dentistry, tailored to your comfort and long-term oral health.
+        </p>
+        <div class="grid grid-cols-2 gap-6 mt-12">
+            <div class="p-6 bg-white rounded-xl shadow-sm border border-slate-100">
+                <span class="material-symbols-outlined text-tertiary mb-4 text-3xl fill-icon">health_and_safety</span>
+                <h3 class="font-h3 text-h3 text-primary mb-2">Secure</h3>
+                <p class="text-on-surface-variant text-sm">HIPAA-compliant health records management.</p>
+            </div>
+            <div class="p-6 bg-white rounded-xl shadow-sm border border-slate-100">
+                <span class="material-symbols-outlined text-tertiary mb-4 text-3xl fill-icon">calendar_month</span>
+                <h3 class="font-h3 text-h3 text-primary mb-2">Smart</h3>
+                <p class="text-on-surface-variant text-sm">Real-time scheduling with our expert dentists.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right side form -->
+    <div class="flex justify-center lg:justify-end">
+        <div class="w-full max-w-md bg-white p-10 rounded-xl shadow-[0px_4px_20px_rgba(0,0,0,0.05)] border border-slate-50">
+            <div class="mb-8">
+                <h2 class="font-h2 text-h2 text-primary mb-2">Create Account</h2>
+                <p class="font-body-md text-on-surface-variant">Enter your details to register with PureSmile.</p>
+            </div>
+
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="mb-5 flex items-start gap-3 bg-error-container text-on-error-container px-4 py-3 rounded-lg">
+                    <span class="material-symbols-outlined text-error text-[20px] mt-0.5">error</span>
+                    <div asp-validation-summary="All" class="text-sm"></div>
+                </div>
+            }
+
+            <form method="post" class="space-y-5">
+                @Html.AntiForgeryToken()
+
+                <!-- Full Name -->
+                <div class="space-y-1">
+                    <label class="font-label-sm text-label-sm text-on-surface ml-1">Full Name *</label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline text-lg">person</span>
+                        <input asp-for="FullName" class="w-full pl-12 pr-4 py-3 bg-white border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none font-body-md" placeholder="Juan Dela Cruz"/>
+                    </div>
+                    <span asp-validation-for="FullName" class="text-error text-xs ml-1"></span>
+                </div>
+
+                <!-- Username -->
+                <div class="space-y-1">
+                    <label class="font-label-sm text-label-sm text-on-surface ml-1">Username *</label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline text-lg">alternate_email</span>
+                        <input asp-for="Username" class="w-full pl-12 pr-4 py-3 bg-white border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none font-body-md" placeholder="Choose a username"/>
+                    </div>
+                    <span asp-validation-for="Username" class="text-error text-xs ml-1"></span>
+                </div>
+
+                <!-- Email -->
+                <div class="space-y-1">
+                    <label class="font-label-sm text-label-sm text-on-surface ml-1">Email Address *</label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline text-lg">mail</span>
+                        <input asp-for="Email" type="email" class="w-full pl-12 pr-4 py-3 bg-white border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none font-body-md" placeholder="you@example.com"/>
+                    </div>
+                    <span asp-validation-for="Email" class="text-error text-xs ml-1"></span>
+                </div>
+
+                <!-- Phone -->
+                <div class="space-y-1">
+                    <label class="font-label-sm text-label-sm text-on-surface ml-1">Contact Number</label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline text-lg">call</span>
+                        <input asp-for="ContactNumber" class="w-full pl-12 pr-4 py-3 bg-white border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none font-body-md" placeholder="09XXXXXXXXX"/>
+                    </div>
+                </div>
+
+                <!-- Date of Birth -->
+                <div class="space-y-1">
+                    <label class="font-label-sm text-label-sm text-on-surface ml-1">Date of Birth *</label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline text-lg">cake</span>
+                        <input asp-for="DateOfBirth" type="date" class="w-full pl-12 pr-4 py-3 bg-white border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none font-body-md"/>
+                    </div>
+                    <span asp-validation-for="DateOfBirth" class="text-error text-xs ml-1"></span>
+                </div>
+
+                <!-- Password -->
+                <div class="space-y-1">
+                    <label class="font-label-sm text-label-sm text-on-surface ml-1">Password *</label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline text-lg">lock</span>
+                        <input asp-for="Password" id="reg-pw" type="password" class="w-full pl-12 pr-12 py-3 bg-white border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none font-body-md" placeholder="Min. 8 characters"/>
+                        <button type="button" onclick="toggleRegPw()" class="absolute right-4 top-1/2 -translate-y-1/2 text-outline hover:text-primary transition-colors">
+                            <span id="reg-pw-icon" class="material-symbols-outlined text-[20px]">visibility</span>
+                        </button>
+                    </div>
+                    <span asp-validation-for="Password" class="text-error text-xs ml-1"></span>
+                </div>
+
+                <!-- Submit -->
+                <button type="submit" class="w-full bg-primary text-on-primary font-button text-button py-4 rounded-full shadow-md hover:bg-primary-container active:scale-[0.98] transition-all duration-200 mt-2">
+                    Create Account
+                </button>
+
+                <div class="pt-4 border-t border-slate-100 text-center">
+                    <p class="font-body-md text-on-surface-variant">
+                        Already have an account?
+                        <a asp-controller="Account" asp-action="Login" class="text-primary font-semibold hover:underline ml-1">Log in</a>
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</main>
+
+<script>
+function toggleRegPw(){
+    const pw = document.getElementById('reg-pw');
+    const icon = document.getElementById('reg-pw-icon');
+    if(pw.type==='password'){ pw.type='text'; icon.textContent='visibility_off'; }
+    else { pw.type='password'; icon.textContent='visibility'; }
+}
+</script>

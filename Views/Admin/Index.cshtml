@@ -1,0 +1,146 @@
+@model DentalClinic.Models.DashboardViewModel
+@{ ViewData["Title"] = "Admin Dashboard"; }
+
+<div class="pt-8 flex min-h-screen max-w-7xl mx-auto px-4">
+    <!-- Sidebar -->
+    <aside class="w-64 border-r border-slate-200 bg-white hidden md:block pt-8 px-4 shrink-0">
+        <div class="space-y-2">
+            <a asp-controller="Admin" asp-action="Index" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-primary/10 text-primary font-semibold">
+                <span class="material-symbols-outlined fill-icon">dashboard</span><span>Overview</span>
+            </a>
+            <a asp-controller="Appointments" asp-action="Index" class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-slate-50 transition-colors">
+                <span class="material-symbols-outlined">calendar_today</span><span>Appointments</span>
+            </a>
+            <a asp-controller="Patients" asp-action="Index" class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-slate-50 transition-colors">
+                <span class="material-symbols-outlined">folder_shared</span><span>Patient Records</span>
+            </a>
+            <a asp-controller="Billing" asp-action="Index" class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-slate-50 transition-colors">
+                <span class="material-symbols-outlined">payments</span><span>Billing</span>
+            </a>
+            <a asp-controller="Admin" asp-action="Users" class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-slate-50 transition-colors">
+                <span class="material-symbols-outlined">manage_accounts</span><span>Manage Users</span>
+            </a>
+            <a asp-controller="Admin" asp-action="AddDentist" class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-slate-50 transition-colors">
+                <span class="material-symbols-outlined">person_add</span><span>Add Dentist</span>
+            </a>
+            <a asp-controller="Admin" asp-action="AuditLog" class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-slate-50 transition-colors">
+                <span class="material-symbols-outlined">policy</span><span>Audit Log</span>
+            </a>
+            <div class="pt-8 mt-8 border-t border-slate-100">
+                <a asp-controller="Account" asp-action="Logout" class="flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-50 transition-colors">
+                    <span class="material-symbols-outlined">logout</span><span>Sign Out</span>
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="flex-1 p-8">
+        <header class="mb-10">
+            <h1 class="font-h2 text-h2 text-on-surface">Admin Dashboard</h1>
+            <p class="text-on-surface-variant font-body-md">@DateTime.Now.ToString("dddd, MMMM dd, yyyy")</p>
+        </header>
+
+        <!-- Stats -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="w-10 h-10 rounded-xl bg-primary-fixed flex items-center justify-center">
+                        <span class="material-symbols-outlined text-primary text-[20px] fill-icon">groups</span>
+                    </span>
+                </div>
+                <p class="text-3xl font-bold text-on-surface">@Model.TotalPatients</p>
+                <p class="text-on-surface-variant text-sm mt-1">Total Patients</p>
+            </div>
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="w-10 h-10 rounded-xl bg-tertiary-fixed flex items-center justify-center">
+                        <span class="material-symbols-outlined text-tertiary text-[20px] fill-icon">medical_services</span>
+                    </span>
+                </div>
+                <p class="text-3xl font-bold text-on-surface">@Model.TotalDentists</p>
+                <p class="text-on-surface-variant text-sm mt-1">Dentists</p>
+            </div>
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="w-10 h-10 rounded-xl bg-secondary-container/30 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-secondary text-[20px] fill-icon">calendar_today</span>
+                    </span>
+                </div>
+                <p class="text-3xl font-bold text-on-surface">@Model.TodayAppointments</p>
+                <p class="text-on-surface-variant text-sm mt-1">Today's Appointments</p>
+            </div>
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="w-10 h-10 rounded-xl bg-error-container flex items-center justify-center">
+                        <span class="material-symbols-outlined text-error text-[20px] fill-icon">receipt_long</span>
+                    </span>
+                </div>
+                <p class="text-3xl font-bold text-on-surface">@Model.PendingBills</p>
+                <p class="text-on-surface-variant text-sm mt-1">Pending Bills</p>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+            <a asp-controller="Appointments" asp-action="Index" class="flex flex-col items-center gap-2 bg-white rounded-2xl p-5 border border-slate-100 hover:border-primary hover:shadow-md transition-all group">
+                <span class="material-symbols-outlined text-primary text-3xl group-hover:scale-110 transition-transform">calendar_month</span>
+                <span class="font-label-sm text-label-sm text-on-surface-variant">All Appointments</span>
+            </a>
+            <a asp-controller="Patients" asp-action="Index" class="flex flex-col items-center gap-2 bg-white rounded-2xl p-5 border border-slate-100 hover:border-primary hover:shadow-md transition-all group">
+                <span class="material-symbols-outlined text-primary text-3xl group-hover:scale-110 transition-transform">people</span>
+                <span class="font-label-sm text-label-sm text-on-surface-variant">All Patients</span>
+            </a>
+            <a asp-controller="Billing" asp-action="Index" class="flex flex-col items-center gap-2 bg-white rounded-2xl p-5 border border-slate-100 hover:border-primary hover:shadow-md transition-all group">
+                <span class="material-symbols-outlined text-primary text-3xl group-hover:scale-110 transition-transform">payments</span>
+                <span class="font-label-sm text-label-sm text-on-surface-variant">Billing</span>
+            </a>
+            <a asp-controller="Admin" asp-action="AuditLog" class="flex flex-col items-center gap-2 bg-white rounded-2xl p-5 border border-slate-100 hover:border-primary hover:shadow-md transition-all group">
+                <span class="material-symbols-outlined text-primary text-3xl group-hover:scale-110 transition-transform">policy</span>
+                <span class="font-label-sm text-label-sm text-on-surface-variant">Audit Log</span>
+            </a>
+        </div>
+
+        <!-- Recent Appointments -->
+        <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="font-h3 text-h3 text-on-surface">Recent Appointments</h3>
+                <a asp-controller="Appointments" asp-action="Index" class="text-primary font-button text-label-sm hover:underline">View All</a>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-100">
+                            <th class="text-left py-3 px-4 font-label-sm text-on-surface-variant">Date</th>
+                            <th class="text-left py-3 px-4 font-label-sm text-on-surface-variant">Patient</th>
+                            <th class="text-left py-3 px-4 font-label-sm text-on-surface-variant">Dentist</th>
+                            <th class="text-left py-3 px-4 font-label-sm text-on-surface-variant">Purpose</th>
+                            <th class="text-left py-3 px-4 font-label-sm text-on-surface-variant">Status</th>
+                            <th class="text-left py-3 px-4 font-label-sm text-on-surface-variant"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var a in Model.RecentAppointments)
+                        {
+                            <tr class="border-b border-slate-50 hover:bg-surface-container-low transition-colors">
+                                <td class="py-4 px-4 whitespace-nowrap text-on-surface font-medium">@a.AppointmentDate.ToString("MMM dd, yyyy HH:mm")</td>
+                                <td class="py-4 px-4 text-on-surface-variant">@a.Patient?.FullName</td>
+                                <td class="py-4 px-4 text-on-surface-variant">Dr. @a.Dentist?.FullName</td>
+                                <td class="py-4 px-4 text-on-surface-variant">@a.Purpose</td>
+                                <td class="py-4 px-4">
+                                    <span class="px-3 py-1 rounded-full text-xs font-semibold
+                                        @(a.Status=="Scheduled"?"bg-sky-100 text-sky-700":a.Status=="Completed"?"bg-green-100 text-green-700":"bg-red-100 text-red-700")">
+                                        @a.Status
+                                    </span>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <a asp-controller="Appointments" asp-action="Details" asp-route-id="@a.AppointmentId" class="text-primary hover:underline font-label-sm">View</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>

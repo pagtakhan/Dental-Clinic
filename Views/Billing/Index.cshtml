@@ -1,0 +1,77 @@
+@model List<DentalClinic.Models.Billing>
+@{ ViewData["Title"] = "Billing"; }
+
+<div class="max-w-7xl mx-auto px-8 py-10">
+    <div class="mb-8">
+        <h1 class="font-h2 text-h2 text-on-surface">Billing Records</h1>
+        <p class="text-on-surface-variant text-sm mt-1">Manage and track all payment records</p>
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                <p class="text-on-surface-variant text-sm mb-1">Total Billed</p>
+                <p class="text-2xl font-bold text-on-surface">₱@Model.Sum(b => b.TotalAmount).ToString("N2")</p>
+            </div>
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                <p class="text-on-surface-variant text-sm mb-1">Total Collected</p>
+                <p class="text-2xl font-bold text-green-600">₱@Model.Sum(b => b.AmountPaid).ToString("N2")</p>
+            </div>
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                <p class="text-on-surface-variant text-sm mb-1">Outstanding Balance</p>
+                <p class="text-2xl font-bold text-error">₱@Model.Sum(b => b.TotalAmount - b.AmountPaid).ToString("N2")</p>
+            </div>
+        </div>
+    }
+
+    <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="bg-surface-container-low border-b border-slate-100">
+                        <th class="text-left py-4 px-6 font-label-sm text-on-surface-variant">Bill #</th>
+                        <th class="text-left py-4 px-6 font-label-sm text-on-surface-variant">Patient</th>
+                        <th class="text-left py-4 px-6 font-label-sm text-on-surface-variant">Date</th>
+                        <th class="text-left py-4 px-6 font-label-sm text-on-surface-variant">Total</th>
+                        <th class="text-left py-4 px-6 font-label-sm text-on-surface-variant">Paid</th>
+                        <th class="text-left py-4 px-6 font-label-sm text-on-surface-variant">Balance</th>
+                        <th class="text-left py-4 px-6 font-label-sm text-on-surface-variant">Status</th>
+                        <th class="text-left py-4 px-6 font-label-sm text-on-surface-variant"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Any())
+                    {
+                        <tr><td colspan="8" class="text-center py-16 text-on-surface-variant">
+                            <span class="material-symbols-outlined text-5xl text-outline mb-3 block">receipt_long</span>
+                            No billing records found.
+                        </td></tr>
+                    }
+                    @foreach (var b in Model)
+                    {
+                        <tr class="border-b border-slate-50 hover:bg-surface-container-low transition-colors">
+                            <td class="py-4 px-6 font-bold text-primary">#@b.BillId</td>
+                            <td class="py-4 px-6 text-on-surface">@b.Patient?.FullName</td>
+                            <td class="py-4 px-6 text-on-surface-variant whitespace-nowrap">@b.IssuedAt.ToString("MMM dd, yyyy")</td>
+                            <td class="py-4 px-6 font-medium text-on-surface">₱@b.TotalAmount.ToString("N2")</td>
+                            <td class="py-4 px-6 text-green-600 font-medium">₱@b.AmountPaid.ToString("N2")</td>
+                            <td class="py-4 px-6 @(b.TotalAmount - b.AmountPaid > 0 ? "text-error" : "text-green-600") font-medium">
+                                ₱@((b.TotalAmount - b.AmountPaid).ToString("N2"))
+                            </td>
+                            <td class="py-4 px-6">
+                                <span class="px-3 py-1 rounded-full text-xs font-semibold
+                                    @(b.PaymentStatus=="Paid"?"bg-green-100 text-green-700":b.PaymentStatus=="Partial"?"bg-yellow-100 text-yellow-700":"bg-red-100 text-red-700")">
+                                    @b.PaymentStatus
+                                </span>
+                            </td>
+                            <td class="py-4 px-6">
+                                <a asp-action="Details" asp-route-id="@b.BillId" class="text-primary hover:underline font-label-sm">View</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
