@@ -1,0 +1,1 @@
+web: dotnet DentalClinic.dll
